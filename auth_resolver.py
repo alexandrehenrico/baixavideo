@@ -21,40 +21,36 @@ class VisionXAuthResolver:
             self.logger.error(f"Failed to update yt-dlp: {e}")
 
     def get_dynamic_opts(self, base_opts):
-        """Applies intelligent bypass and authentication logic."""
+        """Applies advanced stealth and client rotation logic."""
         opts = base_opts.copy()
         
-        # 1. Network Strategy: Force IPv4 to bypass many cloud/data-center blocks
+        # 1. Network Strategy: Force IPv4
         opts['source_address'] = '0.0.0.0' 
         
-        # 2. Authentication Strategy
+        # 2. Client Impersonation Strategy (CRITICAL)
+        # We tell YouTube we are an Android App or a TV, which has less bot protection than Web.
+        opts['extractor_args'] = {
+            'youtube': {
+                'player_client': ['android', 'web_embedded'],
+                'skip': ['dash', 'hls']
+            }
+        }
+        
+        # 3. Authentication (Cookies)
         if os.path.exists(self.cookies_path):
-            self.logger.info(f"Using cookie persistence from {self.cookies_path} (Cloud/Manual Mode)")
+            self.logger.info(f"Applying cookies from {self.cookies_path}")
             opts['cookiefile'] = self.cookies_path
-        else:
-            # Local Dev Mode: Try to detect active browser sessions
-            self.logger.info("No cookies.txt found. Attempting to capture local browser sessions...")
-            browsers = ['chrome', 'edge', 'firefox', 'brave', 'opera', 'chromium']
-            
-            for browser in browsers:
-                # We try one by one. If it fails (like on a headless server), we just ignore it.
-                # Note: On Linux/Headless without browsers, this will safely be ignored.
-                # On Windows/local, it will try to "steal" the session.
-                try:
-                    # We don't actually set it here yet, because yt-dlp might fail late.
-                    # We'll stick to a simpler logic of checking if we are on Windows first.
-                    if self.os_name == 'Windows':
-                        opts['cookiesfrombrowser'] = (browser, None, None, None)
-                        self.logger.info(f"Using session from {browser}")
-                        break
-                except:
-                    continue
         
-        # 3. Impersonate Real Browser
-        opts['user_agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        # 4. Stealth Headers: Impersonate a real mobile device
+        opts['user_agent'] = 'com.google.android.youtube/19.05.36 (Linux; U; Android 11; pt_BR; Pixel 5 Build/RD2A.211001.002) gzip'
         
-        # 4. Better extraction reliability
+        # 5. Extraction reliability
         opts['nocheckcertificate'] = True
+        opts['ignoreerrors'] = True
+        opts['no_color'] = True
+        
+        # 6. Bypass geographical blocks
+        opts['geo_bypass'] = True
         
         return opts
 
