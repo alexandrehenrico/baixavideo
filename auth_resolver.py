@@ -21,30 +21,30 @@ class VisionXAuthResolver:
             self.logger.error(f"Failed to update yt-dlp: {e}")
 
     def get_dynamic_opts(self, base_opts):
-        """Estratégia Extrema: Camuflagem iOS/Safari (Legacy)"""
+        """Estratégia de Sincronia: Windows/Chrome + Stealth"""
         opts = base_opts.copy()
         
         # 1. Network: Forçar IPv4
         opts['source_address'] = '0.0.0.0' 
         
-        # 2. Client Impersonation: iOS é atualmente o mais difícil de bloquear
+        # 2. Client Impersonation: Usar o cliente web comum mas com bypass
         opts['extractor_args'] = {
             'youtube': {
-                'player_client': ['ios'],
-                'player_skip': ['webcheck', 'js']
+                'player_client': ['web'],
+                'skip': ['hls', 'dash']
             }
         }
         
-        # 3. Cookies
+        # 3. Cookies (Obrigatório para cloud)
         if os.path.exists(self.cookies_path):
             opts['cookiefile'] = self.cookies_path
         
-        # 4. User-Agent Safari/iPhone
-        opts['user_agent'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'
+        # 4. User-Agent: DEVE ser igual ao do navegador que gerou o cookies.txt
+        opts['user_agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         
-        # 5. Reliability
+        # 5. Opções de Stealth adicionais
+        opts['referer'] = 'https://www.google.com/'
         opts['nocheckcertificate'] = True
-        opts['ignoreerrors'] = False # MUDANÇA: agora queremos ver o erro real no log se falhar
         opts['geo_bypass'] = True
         
         return opts
