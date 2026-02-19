@@ -1,10 +1,4 @@
-import yt_dlp
+from app import app
 
-url = input("Cole a URL do vídeo: ")
-
-ydl_opts = {
-    'outtmpl': 'downloads/%(title)s.%(ext)s'
-}
-
-with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-    ydl.download([url])
+if __name__ == '__main__':
+    app.run()
