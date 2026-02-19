@@ -259,6 +259,9 @@ def download_video():
             with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
                 info = ydl.extract_info(url, download=False)
             
+            if not info:
+                return jsonify({'error': 'Não foi possível obter informações do vídeo. Provavelmente bloqueado pelo YouTube.'}), 500
+
             video_id = info.get('id', 'thumbnail')
             title = info.get('title', 'thumbnail').replace('/', '_').replace('\\', '_')
             
@@ -300,6 +303,8 @@ def download_video():
             
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
+                if not info:
+                    return jsonify({'error': 'Falha no download. O YouTube bloqueou a requisição.'}), 500
                 filename = ydl.prepare_filename(info)
                 pre, ext = os.path.splitext(filename)
                 filename = f"{pre}.{target_format}"
@@ -312,6 +317,8 @@ def download_video():
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
+                if not info:
+                    return jsonify({'error': 'Falha no download. O YouTube bloqueou a requisição.'}), 500
                 filename = ydl.prepare_filename(info)
             
         if not filename or not os.path.exists(filename):
