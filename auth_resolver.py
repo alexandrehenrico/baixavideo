@@ -21,35 +21,30 @@ class VisionXAuthResolver:
             self.logger.error(f"Failed to update yt-dlp: {e}")
 
     def get_dynamic_opts(self, base_opts):
-        """Applies advanced stealth and client rotation logic."""
+        """Estratégia Extrema: Camuflagem iOS/Safari (Legacy)"""
         opts = base_opts.copy()
         
-        # 1. Network Strategy: Force IPv4
+        # 1. Network: Forçar IPv4
         opts['source_address'] = '0.0.0.0' 
         
-        # 2. Client Impersonation Strategy (CRITICAL)
-        # We tell YouTube we are an Android App or a TV, which has less bot protection than Web.
+        # 2. Client Impersonation: iOS é atualmente o mais difícil de bloquear
         opts['extractor_args'] = {
             'youtube': {
-                'player_client': ['android', 'web_embedded'],
-                'skip': ['dash', 'hls']
+                'player_client': ['ios'],
+                'player_skip': ['webcheck', 'js']
             }
         }
         
-        # 3. Authentication (Cookies)
+        # 3. Cookies
         if os.path.exists(self.cookies_path):
-            self.logger.info(f"Applying cookies from {self.cookies_path}")
             opts['cookiefile'] = self.cookies_path
         
-        # 4. Stealth Headers: Impersonate a real mobile device
-        opts['user_agent'] = 'com.google.android.youtube/19.05.36 (Linux; U; Android 11; pt_BR; Pixel 5 Build/RD2A.211001.002) gzip'
+        # 4. User-Agent Safari/iPhone
+        opts['user_agent'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'
         
-        # 5. Extraction reliability
+        # 5. Reliability
         opts['nocheckcertificate'] = True
-        opts['ignoreerrors'] = True
-        opts['no_color'] = True
-        
-        # 6. Bypass geographical blocks
+        opts['ignoreerrors'] = False # MUDANÇA: agora queremos ver o erro real no log se falhar
         opts['geo_bypass'] = True
         
         return opts
