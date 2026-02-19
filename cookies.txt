@@ -1,0 +1,16 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+.youtube.com	TRUE	/	TRUE	1806034962	PREF	f6=40000000&tz=America.Sao_Paulo&f7=100&f5=20000&f4=10000
+.youtube.com	TRUE	/	TRUE	1779230891	VISITOR_INFO1_LIVE	3nkBrNgHHi8
+.youtube.com	TRUE	/	TRUE	1779230891	VISITOR_PRIVACY_METADATA	CgJCUhIEGgAgaQ%3D%3D
+.youtube.com	TRUE	/	TRUE	1781265921	NID	527=CvJtij-fFaEJrnJ_E1-hFQh8PU_wGGXEUCWfKNgJJ3DKCEON2GAKI374oY-2P_YwyInEAF5M8owtdHFtk3ZQjSfQte4tnSDJlF_phPr8adAHrCC13uQAD3-NjfDoeS6lq8wBgdXSs8iY9EfEFr8Fw_EgBUb-zhpjuS905CtxrCPpQcAG0qUs8uNbK6CW-4M5Ew
+.youtube.com	TRUE	/	TRUE	1771476756	GPS	1
+.youtube.com	TRUE	/	TRUE	1803010959	__Secure-1PSIDTS	sidts-CjQB7I_69OQvJzbw8g6bEndx6fC3eUXRoWzz-cTWssqzYY0KYMFv08nxvjeOjzKHNDpPoHIkEAA
+.youtube.com	TRUE	/	TRUE	1803010959	__Secure-3PSIDTS	sidts-CjQB7I_69OQvJzbw8g6bEndx6fC3eUXRoWzz-cTWssqzYY0KYMFv08nxvjeOjzKHNDpPoHIkEAA
+www.youtube.com	FALSE	/	FALSE	0	i18next	pt-PT
+.youtube.com	TRUE	/	TRUE	1787026966	VISITOR_INFO1_LIVE	K3TQf_UQdSc
+.youtube.com	TRUE	/	TRUE	1787026966	VISITOR_PRIVACY_METADATA	CgJCUhIEGgAgKg%3D%3D
+.youtube.com	TRUE	/	TRUE	0	YSC	3aWOHcZC7Wc
+.youtube.com	TRUE	/	TRUE	1787026956	__Secure-ROLLOUT_TOKEN	CK7zjoCyy8emXhD9t7n1ybqLAxjGu--72uSSAw%3D%3D
