@@ -18,8 +18,13 @@ DOWNLOAD_FOLDER = 'downloads'
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
-# FFmpeg location (installed via winget)
-FFMPEG_PATH = r'C:\Users\Alexandre Henrique\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.0.1-full_build\bin'
+# FFmpeg location - auto-detect
+FFMPEG_WIN = r'C:\Users\Alexandre Henrique\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-8.0.1-full_build\bin'
+if os.path.exists(FFMPEG_WIN):
+    FFMPEG_PATH = FFMPEG_WIN
+else:
+    # Linux / Render / Docker - ffmpeg is in PATH
+    FFMPEG_PATH = '/usr/bin'
 
 # Store progress data for each client
 progress_data = {}
@@ -365,4 +370,5 @@ if __name__ == '__main__':
                     os.remove(fp)
             except:
                 pass
-    app.run(debug=True, threaded=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, threaded=True, host='0.0.0.0', port=port)
