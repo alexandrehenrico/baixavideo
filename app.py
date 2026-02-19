@@ -26,8 +26,26 @@ else:
     # Linux / Render / Docker - ffmpeg is in PATH
     FFMPEG_PATH = '/usr/bin'
 
+# YouTube Cookies - for cloud deployment authentication
+COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
+USE_COOKIES = os.path.exists(COOKIES_FILE)
+if USE_COOKIES:
+    app.logger.info(f"Cookies found at {COOKIES_FILE}")
+else:
+    app.logger.info("No cookies.txt found - YouTube may block requests on cloud servers")
+
 # Store progress data for each client
 progress_data = {}
+
+def get_ydl_opts(extra_opts=None):
+    opts = {
+        'ffmpeg_location': FFMPEG_PATH,
+    }
+    if USE_COOKIES:
+        opts['cookiefile'] = COOKIES_FILE
+    if extra_opts:
+        opts.update(extra_opts)
+    return opts
 
 @app.route('/')
 def home():
@@ -53,14 +71,13 @@ def get_trending():
         # We search for a generic term or use a playlist if desired, 
         # but 'ytsearch20:trending' is a good heuristic.
         # Using 'extract_flat' is CRITICAL for speed.
-        ydl_opts = {
+        ydl_opts = get_ydl_opts({
             'quiet': True,
             'extract_flat': 'in_playlist', # Get metadata without deep extraction
             'default_search': 'ytsearch20', 
             'noplaylist': True,
             'ignoreerrors': True,
-            'ffmpeg_location': FFMPEG_PATH,
-        }
+        })
         
         # Searching for "music" or generic term as landing page content
         # ideally we'd use a specific feed URL, but search is safer across regions
@@ -116,14 +133,13 @@ def search_video():
 
     try:
         # Optimized search for speed
-        ydl_opts = {
+        ydl_opts = get_ydl_opts({
             'quiet': True,
             'extract_flat': 'in_playlist', # KEY for speed
             'default_search': 'ytsearch20',
             'noplaylist': True,
             'ignoreerrors': True,
-            'ffmpeg_location': FFMPEG_PATH,
-        }
+        })
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
@@ -221,23 +237,21 @@ def download_video():
                 if client_id:
                     progress_data[client_id] = f"[download] 100% - Processando arquivo..."
 
-        ydl_opts = {
+        ydl_opts = get_ydl_opts({
             'outtmpl': os.path.join(DOWNLOAD_FOLDER, '%(title)s.%(ext)s'),
             'noplaylist': True,
             'progress_hooks': [progress_hook],
-            'ffmpeg_location': FFMPEG_PATH,
-        }
+        })
 
         target_format = fmt_option
 
         if fmt_option == 'thumbnail':
             # Download thumbnail as a proper image file
             # First, extract info to get video details and thumbnail URL
-            ydl_opts_info = {
+            ydl_opts_info = get_ydl_opts({
                 'quiet': True,
                 'noplaylist': True,
-                'ffmpeg_location': FFMPEG_PATH,
-            }
+            })
             with yt_dlp.YoutubeDL(ydl_opts_info) as ydl:
                 info = ydl.extract_info(url, download=False)
             
