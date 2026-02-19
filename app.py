@@ -97,6 +97,8 @@ def get_trending():
 
 def _parse_results(info):
     results = []
+    if not info:
+        return results
     if 'entries' in info:
         for entry in info['entries']:
             if not entry: continue
@@ -156,6 +158,9 @@ def search_video():
 
 def process_results(info):
     results = []
+    if not info:
+        return results
+        
     entries = []
     
     if 'entries' in info:
