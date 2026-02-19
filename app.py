@@ -7,6 +7,7 @@ import io
 import logging
 import glob
 import urllib.request
+from auth_resolver import VisionXAuthResolver
 
 app = Flask(__name__)
 
@@ -26,26 +27,24 @@ else:
     # Linux / Render / Docker - ffmpeg is in PATH
     FFMPEG_PATH = '/usr/bin'
 
-# YouTube Cookies - for cloud deployment authentication
-COOKIES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cookies.txt')
-USE_COOKIES = os.path.exists(COOKIES_FILE)
-if USE_COOKIES:
-    app.logger.info(f"Cookies found at {COOKIES_FILE}")
-else:
-    app.logger.info("No cookies.txt found - YouTube may block requests on cloud servers")
-
 # Store progress data for each client
 progress_data = {}
 
+# Initialize Robust Auth Resolver
+resolver = VisionXAuthResolver(app.logger)
+
 def get_ydl_opts(extra_opts=None):
-    opts = {
+    base_opts = {
         'ffmpeg_location': FFMPEG_PATH,
+        'quiet': False, # Allow diagnostic logs
     }
-    if USE_COOKIES:
-        opts['cookiefile'] = COOKIES_FILE
+    
+    # Injeta lógica de autenticação e bypass de rede
+    full_opts = resolver.get_dynamic_opts(base_opts)
+    
     if extra_opts:
-        opts.update(extra_opts)
-    return opts
+        full_opts.update(extra_opts)
+    return full_opts
 
 @app.route('/')
 def home():
